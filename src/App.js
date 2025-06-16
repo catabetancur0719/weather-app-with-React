@@ -5,10 +5,33 @@ import WeekDays from "./WeekDays";
 
 export default function App() {
   return (
-    <div className="App">
-      <Search />
-      <WeekDays />
-    </div>
+    <>
+      <div className="App">
+        <Search />
+        <WeekDays />
+      </div>
+
+      <div className="footer">
+        <p>
+          Code by Cata Betancur{" "}
+          <a
+            href="https://github.com/catabetancur0719/weather-app-with-React"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            GitHub{" "}
+          </a>
+          and hosted on{" "}
+          <a
+            href="https://my-weather-app-with-react.netlify.app/"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Netlify
+          </a>
+        </p>
+      </div>
+    </>
   );
 }
 
