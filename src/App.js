@@ -1,14 +1,18 @@
+import React, { useState } from "react";
 import "./App.css";
 
 import Search from "./Search"
 import WeekDays from "./WeekDays";
 
 export default function App() {
+
+  const [forecast, setForecast] = useState([]);
+
   return (
     <>
       <div className="App">
-        <Search />
-        <WeekDays />
+        <Search onForecastChange={setForecast} />
+        {forecast.length > 0 && <WeekDays forecast={forecast} />}
       </div>
 
       <div className="footer">
