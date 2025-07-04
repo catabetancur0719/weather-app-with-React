@@ -7,20 +7,6 @@ export default function Search({ onForecastChange }) {
   const [temperature, setTemperature] = useState();
   const [city, setCity] = useState("Medellín");
 
-  // 🌤️ Mostrar Medellín automáticamente al abrir la app
-  useEffect(() => {
-    searchCity("Medellín");
-  }, []);
-
-  function searchCity(cityName) {
-    const apiKey = "fb3o96aeef26e064f124eb8cta459256";
-    const currentUrl = `https://api.shecodes.io/weather/v1/current?query=${cityName}&key=${apiKey}`;
-    const forecastUrl = `https://api.shecodes.io/weather/v1/forecast?query=${cityName}&key=${apiKey}&days=5`;
-
-    axios.get(currentUrl).then(showTemp);
-    axios.get(forecastUrl).then(showForecast);
-  }
-
   function showTemp(response) {
     setTemperature({
       temp: response.data.temperature.current,
@@ -31,8 +17,30 @@ export default function Search({ onForecastChange }) {
     });
   }
 
-  function showForecast(response) {
-    onForecastChange(response.data.daily);
+  // ✅ useEffect sin warnings
+  useEffect(() => {
+    const apiKey = "fb3o96aeef26e064f124eb8cta459256";
+    const cityName = "Medellín";
+    const currentUrl = `https://api.shecodes.io/weather/v1/current?query=${cityName}&key=${apiKey}`;
+    const forecastUrl = `https://api.shecodes.io/weather/v1/forecast?query=${cityName}&key=${apiKey}&days=5`;
+
+    // ✅ Declarar showForecast adentro
+    function showForecast(response) {
+      onForecastChange(response.data.daily);
+    }
+
+    axios.get(currentUrl).then(showTemp);
+    axios.get(forecastUrl).then(showForecast);
+  }, [onForecastChange]); 
+  function searchCity(cityName) {
+    const apiKey = "fb3o96aeef26e064f124eb8cta459256";
+    const currentUrl = `https://api.shecodes.io/weather/v1/current?query=${cityName}&key=${apiKey}`;
+    const forecastUrl = `https://api.shecodes.io/weather/v1/forecast?query=${cityName}&key=${apiKey}&days=5`;
+
+    axios.get(currentUrl).then(showTemp);
+    axios
+      .get(forecastUrl)
+      .then((response) => onForecastChange(response.data.daily));
   }
 
   function handleSubmit(event) {
