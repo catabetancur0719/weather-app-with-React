@@ -1,14 +1,25 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
-
 import FormattedDate from "./FormattedDate";
 import Degrees from "./Degrees";
 
-
-export default function Search({onForecastChange}) {
+export default function Search({ onForecastChange }) {
   const [temperature, setTemperature] = useState();
-  const [city, setCity] = useState("");
-  
+  const [city, setCity] = useState("Medellín");
+
+  // 🌤️ Mostrar Medellín automáticamente al abrir la app
+  useEffect(() => {
+    searchCity("Medellín");
+  }, []);
+
+  function searchCity(cityName) {
+    const apiKey = "fb3o96aeef26e064f124eb8cta459256";
+    const currentUrl = `https://api.shecodes.io/weather/v1/current?query=${cityName}&key=${apiKey}`;
+    const forecastUrl = `https://api.shecodes.io/weather/v1/forecast?query=${cityName}&key=${apiKey}&days=5`;
+
+    axios.get(currentUrl).then(showTemp);
+    axios.get(forecastUrl).then(showForecast);
+  }
 
   function showTemp(response) {
     setTemperature({
@@ -18,23 +29,15 @@ export default function Search({onForecastChange}) {
       wind: response.data.wind.speed,
       date: new Date(response.data.time * 1000),
     });
-    //console.log(response.data);
   }
 
-  function showForecast(response){
+  function showForecast(response) {
     onForecastChange(response.data.daily);
   }
 
   function handleSubmit(event) {
     event.preventDefault();
-    //console.log("Buscando clima de:", city);
-    const apiKey = "fb3o96aeef26e064f124eb8cta459256";
-    const currentUrl = `https://api.shecodes.io/weather/v1/current?query=${city}&key=${apiKey}`;
-    const forecastUrl = `https://api.shecodes.io/weather/v1/forecast?query=${city}&key=${apiKey}&days=5`;
-
-    axios.get(currentUrl).then(showTemp);
-    axios.get(forecastUrl).then(showForecast);
-    
+    searchCity(city);
   }
 
   function handleCityChange(event) {
